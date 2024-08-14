@@ -1,11 +1,8 @@
 package cmd
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -160,93 +157,10 @@ var getCmd = &cobra.Command{
 
 			configs[index] = config
 		}
-
 		// dummy root chapter to contain all subchapters
 		c := book.NewEmptyChapter()
-		for _, u := range args {
-			newChapter := book.NewChapterFromURL(u, "", configs, 0, func(index int, name string) {})
-			c.AddSubChapter(newChapter)
-		}
-		c.SetName(c.SubChapters()[0].Name())
 
-		if getOpts.Format == "md" {
-			filename := book.ToMarkdown(c, getOpts.output)
+		book.ScrapeAndConvert(args, configs, "output_directory", c)
 
-			if getOpts.stdout {
-				bytesRead, err := ioutil.ReadFile(filename)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				fmt.Println(string(bytesRead))
-			} else {
-				fmt.Printf("Markdown saved to \"%s\"\n", filename)
-			}
-		}
-
-		if getOpts.Format == "json" {
-			filename := book.ToMarkdown(c, getOpts.output)
-
-			bytesRead, err := ioutil.ReadFile(filename)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			book := make(map[string]interface{})
-			book["name"] = c.Name()
-			book["content"] = string(bytesRead)
-
-			bookJson, err := json.Marshal(book)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			fmt.Println(string(bookJson))
-		}
-
-		if getOpts.Format == "html" {
-			filename := book.ToHtml(c, getOpts.output)
-
-			if getOpts.stdout {
-				bytesRead, err := ioutil.ReadFile(filename)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				fmt.Println(string(bytesRead))
-			} else {
-				fmt.Printf("Html saved to \"%s\"\n", filename)
-			}
-		}
-
-		if getOpts.Format == "epub" {
-			filename := book.ToEpub(c, getOpts.output)
-
-			if getOpts.stdout {
-				bytesRead, err := ioutil.ReadFile(filename)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				fmt.Println(string(bytesRead))
-			} else {
-				fmt.Printf("Ebook saved to \"%s\"\n", filename)
-			}
-		}
-
-		if getOpts.Format == "mobi" {
-			filename := book.ToMobi(c, getOpts.output)
-
-			if getOpts.stdout {
-				bytesRead, err := ioutil.ReadFile(filename)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				fmt.Println(string(bytesRead))
-			} else {
-				fmt.Printf("Ebook saved to \"%s\"\n", filename)
-			}
-		}
 	},
 }

@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/main.go", // Adjust the path if main.go is located elsewhere
+            "env": {},
+            "args": [
+                "get", 
+                "https://www.eff.org/cyberspace-independence", 
+                "--selector", "a[href^='/']"
+
+            ], 
+            "showLog": true
+        }
+    ]
+}

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
@@ -53,16 +54,22 @@ func ToMarkdown(c chapter, filename string) string {
 
 	markdown := ToMarkdownString(c)
 
-	// write to file
+	// Ensure the directory for the file exists
+	if err := os.MkdirAll(filepath.Dir(filename), 0755); err != nil {
+		log.Fatal(err)
+	}
+
+	// Write to file
 	f, err := os.Create(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err2 := f.WriteString(markdown)
-	if err2 != nil {
-		log.Fatal(err2)
+	defer f.Close()
+
+	_, err = f.WriteString(markdown)
+	if err != nil {
+		log.Fatal(err)
 	}
-	f.Close()
 
 	return filename
 }
