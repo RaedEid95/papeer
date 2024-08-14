@@ -208,3 +208,16 @@ Type `papeer completion bash -h` for more information.
 - `go-epub` convert HTML to EPUB
 - `colly` query HTML trees
 - `uiprogress` display progress bars
+
+
+# Running the Go Application
+
+To run your Go application with the adjusted modifications, follow these steps:
+
+1. **Navigate to your project directory** (where `main.go` is located).
+
+2. **Run the following command:**
+
+   ```bash
+   go run main.go get https://www.eff.org/cyberspace-independence --selector "a[href^='/']"
+
